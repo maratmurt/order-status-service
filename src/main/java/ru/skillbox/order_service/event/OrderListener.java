@@ -25,7 +25,7 @@ public class OrderListener {
     @KafkaListener(
             topics = "${app.kafka.consumer.topic}",
             groupId = "${app.kafka.group-id}",
-            containerFactory = "kafkaMessageConcurrentKafkaListenerContainerFactory"
+            containerFactory = "containerFactory"
     )
     public void listen(
             @Payload OrderEvent event,
@@ -37,7 +37,7 @@ public class OrderListener {
         log.info("Received message: {}", event);
         log.info("Key: {}; Partition: {}; Topic: {}; Timestamp: {}", key, partition, topic, timestamp);
 
-        kafkaTemplate.send(producerTopic, new OrderStatusEvent("CREATED", Instant.now()));
+        kafkaTemplate.send(producerTopic, key, new OrderStatusEvent("CREATED", Instant.now()));
     }
 
 }

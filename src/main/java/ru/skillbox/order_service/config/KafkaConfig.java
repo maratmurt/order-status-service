@@ -1,6 +1,5 @@
 package ru.skillbox.order_service.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -28,7 +27,7 @@ public class KafkaConfig {
     private String kafkaMessageGroupId;
 
     @Bean
-    public ProducerFactory<String, OrderStatusEvent> kafkaMessageProducerFactory() {
+    public ProducerFactory<String, OrderStatusEvent> producerFactory() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -44,7 +43,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, OrderEvent> kafkaMessageConsumerFactory() {
+    public ConsumerFactory<String, OrderEvent> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -57,11 +56,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderEvent> kafkaMessageConcurrentKafkaListenerContainerFactory(
-            ConsumerFactory<String, OrderEvent> kafkaMessageConsumerFactory
+    public ConcurrentKafkaListenerContainerFactory<String, OrderEvent> containerFactory(
+            ConsumerFactory<String, OrderEvent> consumerFactory
     ) {
-        ConcurrentKafkaListenerContainerFactory<String, OrderEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(kafkaMessageConsumerFactory);
+        ConcurrentKafkaListenerContainerFactory<String, OrderEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
 
         return factory;
     }
